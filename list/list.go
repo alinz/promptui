@@ -11,7 +11,7 @@ import (
 // the item fits the searched term.
 type Searcher func(input string, index int) bool
 
-type Builder func(input string) []*interface{}
+type Builder func(input string) interface{}
 
 // NotFound is an index returned when no item was selected. This could
 // happen due to a search without results.
@@ -37,16 +37,9 @@ func New(items interface{}, size int) (*List, error) {
 		return nil, fmt.Errorf("list size %d must be greater than 0", size)
 	}
 
-	if items == nil || reflect.TypeOf(items).Kind() != reflect.Slice {
-		return nil, fmt.Errorf("items %v is not a slice", items)
-	}
-
-	slice := reflect.ValueOf(items)
-	values := make([]*interface{}, slice.Len())
-
-	for i := range values {
-		item := slice.Index(i).Interface()
-		values[i] = &item
+	values, err := convert(items)
+	if err != nil {
+		return nil, err
 	}
 
 	return &List{size: size, items: values, scope: values}, nil
@@ -100,7 +93,8 @@ func (l *List) build(term string) {
 		return
 	}
 
-	l.items = l.Builder(term)
+	newItems := l.Builder(term)
+	l.items, _ = convert(newItems)
 }
 
 // Start returns the current render start position of the list.
@@ -246,4 +240,20 @@ func (l *List) Items() ([]interface{}, int) {
 	}
 
 	return result, active
+}
+
+func convert(items interface{}) ([]*interface{}, error) {
+	if items == nil || reflect.TypeOf(items).Kind() != reflect.Slice {
+		return nil, fmt.Errorf("items %v is not a slice", items)
+	}
+
+	slice := reflect.ValueOf(items)
+	values := make([]*interface{}, slice.Len())
+
+	for i := range values {
+		item := slice.Index(i).Interface()
+		values[i] = &item
+	}
+
+	return values, nil
 }
