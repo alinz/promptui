@@ -11,6 +11,8 @@ import (
 // the item fits the searched term.
 type Searcher func(input string, index int) bool
 
+type Builder func(input string) []*interface{}
+
 // NotFound is an index returned when no item was selected. This could
 // happen due to a search without results.
 const NotFound = -1
@@ -25,6 +27,7 @@ type List struct {
 	size     int // size is the number of visible options
 	start    int
 	Searcher Searcher
+	Builder  Builder
 }
 
 // New creates and initializes a list of searchable items. The items attribute must be a slice type with a
@@ -68,6 +71,7 @@ func (l *List) Search(term string) {
 	term = strings.Trim(term, " ")
 	l.cursor = 0
 	l.start = 0
+	l.build(term)
 	l.search(term)
 }
 
@@ -89,6 +93,14 @@ func (l *List) search(term string) {
 	}
 
 	l.scope = scope
+}
+
+func (l *List) build(term string) {
+	if l.Builder == nil {
+		return
+	}
+
+	l.items = l.Builder(term)
 }
 
 // Start returns the current render start position of the list.

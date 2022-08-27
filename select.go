@@ -69,6 +69,10 @@ type Select struct {
 	// it is implemented.
 	Searcher list.Searcher
 
+	// Builder is a function that can be implemented to rebuild the items. This particulary useful
+	// if one needs to implement search which requires to get new items from an async operations.
+	Builder list.Builder
+
 	// StartInSearchMode sets whether or not the select mode should start in search mode or selection mode.
 	// For search mode to work, the Search property must be implemented.
 	StartInSearchMode bool
@@ -116,24 +120,27 @@ type Key struct {
 // text/template syntax. Custom state, colors and background color are available for use inside
 // the templates and are documented inside the Variable section of the docs.
 //
-// Examples
+// # Examples
 //
 // text/templates use a special notation to display programmable content. Using the double bracket notation,
 // the value can be printed with specific helper functions. For example
 //
 // This displays the value given to the template as pure, unstylized text. Structs are transformed to string
 // with this notation.
-// 	'{{ . }}'
+//
+//	'{{ . }}'
 //
 // This displays the name property of the value colored in cyan
-// 	'{{ .Name | cyan }}'
+//
+//	'{{ .Name | cyan }}'
 //
 // This displays the label property of value colored in red with a cyan background-color
-// 	'{{ .Label | red | cyan }}'
+//
+//	'{{ .Label | red | cyan }}'
 //
 // See the doc of text/template for more info: https://golang.org/pkg/text/template/
 //
-// Notes
+// # Notes
 //
 // Setting any of these templates will remove the icons from the default templates. They must
 // be added back in each of their specific templates. The styles.go constants contains the default icons.
@@ -207,6 +214,7 @@ func (s *Select) RunCursorAt(cursorPos, scroll int) (int, string, error) {
 		return 0, "", err
 	}
 	l.Searcher = s.Searcher
+	l.Builder = s.Builder
 
 	s.list = l
 
