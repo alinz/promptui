@@ -8,9 +8,9 @@ import (
 	"text/tabwriter"
 	"text/template"
 
+	"github.com/alinz/promptui/list"
+	"github.com/alinz/promptui/screenbuf"
 	"github.com/chzyer/readline"
-	"github.com/manifoldco/promptui/list"
-	"github.com/manifoldco/promptui/screenbuf"
 )
 
 // SelectedAdd is used internally inside SelectWithAdd when the add option is selected in select mode.
