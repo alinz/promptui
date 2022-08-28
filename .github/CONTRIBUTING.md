@@ -34,7 +34,7 @@ Your issue must follow these guidelines for it to be considered:
 
 - Check you’re on the latest version, we may have already fixed your bug!
 - [Search our issue
-  tracker](https://github.com/manifoldco/promptui/issues/search&type=issues)
+  tracker](https://github.com/alinz/promptui/issues/search&type=issues)
   for your problem, someone may have already reported it
 
 # Opening a Pull Request
@@ -68,7 +68,7 @@ License](../LICENSE.md).
 # Contributor license agreement
 
 For legal purposes all contributors must sign a [contributor license
-agreement](https://cla-assistant.io/manifoldco/promptui), either for an
+agreement](https://cla-assistant.io/alinz/promptui), either for an
 individual or corporation, before a pull request can be accepted.
 
 You will be prompted to sign the agreement by CLA Assistant (bot) when you open
